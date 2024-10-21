@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+    //add the DbSet
     public DbSet<ElectricityRecord> ElectricityRecords { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {

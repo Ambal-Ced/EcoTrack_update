@@ -2,6 +2,7 @@
 using System;
 namespace ecos.Models
 {
+    //all
     public class ElectricityRecord
     {
         [Key]
@@ -21,5 +22,7 @@ namespace ecos.Models
         [Required]
         [Display(Name = "Billing Month")]
         public DateTime Month { get; set; }
+        // New property for User ID
+        public string UserId { get; set; } // Forer User
     }
 }

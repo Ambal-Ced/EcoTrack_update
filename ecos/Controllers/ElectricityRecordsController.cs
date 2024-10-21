@@ -22,6 +22,7 @@ namespace ecos
         }
 
         // GET: ElectricityRecords
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.ElectricityRecords.ToListAsync());
