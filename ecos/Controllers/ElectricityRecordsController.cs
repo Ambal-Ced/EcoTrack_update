@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ecos.Areas.Identity.Data;
 using ecos.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace ecos
 {
@@ -15,18 +17,25 @@ namespace ecos
     public class ElectricityRecordsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ElectricityRecordsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ElectricityRecordsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ElectricityRecords
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ElectricityRecords.ToListAsync());
+            // Sorting records by Month in descending order (newest to oldest)
+            var sortedRecords = await _context.ElectricityRecords
+                                              .OrderByDescending(r => r.Month)
+                                              .ToListAsync();
+
+            return View(sortedRecords);
         }
+
 
         // GET: ElectricityRecords/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -47,17 +56,24 @@ namespace ecos
         }
 
         // GET: ElectricityRecords/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Fetch all users from AspNetUsers
+            var users = await _userManager.Users.ToListAsync();
+
+            // Create a list of SelectListItems for the dropdown
+            ViewBag.Users = new SelectList(users, "Id", "Email"); // "Id" for value, "Email" for display text
+
             return View();
         }
+
 
         // POST: ElectricityRecords/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,HouseholdName,ElectricityRate,TotalBill,Month")] ElectricityRecord electricityRecord)
+        public async Task<IActionResult> Create([Bind("Id,HouseholdName,ElectricityRate,TotalBill,Month,UserId")] ElectricityRecord electricityRecord)
         {
             if (ModelState.IsValid)
             {
@@ -65,8 +81,15 @@ namespace ecos
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // If the model is invalid, pass the user list again for the dropdown
+            var users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = new SelectList(users, "Id", "Email");
+
             return View(electricityRecord);
         }
+
+
 
         // GET: ElectricityRecords/Edit/5
         public async Task<IActionResult> Edit(int? id)

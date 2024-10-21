@@ -12,8 +12,8 @@ using ecos.Areas.Identity.Data;
 namespace ecos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241019123249_TertiaryIdentitySetup")]
-    partial class TertiaryIdentitySetup
+    [Migration("20241021131949_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -259,6 +259,10 @@ namespace ecos.Migrations
 
                     b.Property<double>("TotalBill")
                         .HasColumnType("float");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

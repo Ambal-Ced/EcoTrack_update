@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ecos.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialIdentitySetup : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,23 @@ namespace ecos.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ElectricityRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    HouseholdName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ElectricityRate = table.Column<double>(type: "float", nullable: false),
+                    TotalBill = table.Column<double>(type: "float", nullable: false),
+                    Month = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ElectricityRecords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,6 +233,9 @@ namespace ecos.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ElectricityRecords");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
